@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import './App.css';
 
 function App() {
   const [page, setPage] = useState('consultation');
   const [image, setImage] = useState(null);
+  const [file, setFile] = useState(null);   // 👈 NEW: store actual file
   const [patientInfo, setPatientInfo] = useState({
     fullname: '',
     dob: '',
@@ -24,7 +24,8 @@ function App() {
 
   const handleImageUpload = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setImage(URL.createObjectURL(e.target.files[0]));
+      setFile(e.target.files[0]);                       // 👈 store file object
+      setImage(URL.createObjectURL(e.target.files[0])); // 👈 store preview URL
     }
   };
 
@@ -36,13 +37,13 @@ function App() {
   const handleSubmitPatientInfo = async (e) => {
     e.preventDefault();
 
-    if (!image) {
+    if (!file) {
       alert("Please upload an image first");
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", document.getElementById("upload-image").files[0]);
+    formData.append("file", file);  // 👈 safe now, file is in state
     formData.append("patientInfo", JSON.stringify(patientInfo));
 
     try {
@@ -59,7 +60,6 @@ function App() {
       alert("Failed to analyze image");
     }
   };
-
 
   if (page === 'consultation') {
     return (
