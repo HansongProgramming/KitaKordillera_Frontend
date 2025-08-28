@@ -22,18 +22,36 @@ function App() {
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div className="App" style={{ maxWidth: 500, width: '100%', padding: 24, borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
           <h2>KitaKordillera</h2>
-          <div style={{ marginBottom: 20, background: '#f9f9f9', padding: 16, borderRadius: 6 }}>
+          <div style={{ marginBottom: 20, background: '#f9f9f9', padding: 16, borderRadius: 6, justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
             <strong>Disclaimer:</strong> This tool is for informational purposes only and does not replace professional medical advice.
           </div>
-          <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: 16 }}>
-              <label htmlFor="upload-image" style={{ display: 'block', marginBottom: 8 }}>Upload Image:</label>
-              <input type="file" id="upload-image" accept="image/*" onChange={handleImageUpload} />
-            </div>
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ display: 'block', marginBottom: 8 }}>Take Image:</label>
-              <button type="button" style={{ padding: '8px 16px' }}>Open Camera</button>
-            </div>
+          <form onSubmit={handleSubmit} style={{ }}>
+            <div style={{ marginBottom: 16, display: 'flex', flexDirection: 'row', gap: 16}}> 
+              <div style={{ marginBottom: 16, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', border: '1px solid #ccc', padding: 16, borderRadius: 8, flex:1}}>
+                <input
+                  type="file"
+                  id="upload-image"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  style={{ display: 'none' }}
+                />
+                <label htmlFor="upload-image">
+                  <button
+                    type="button"
+                    style={{ padding: '8px 16px' }}
+                    onClick={() => document.getElementById('upload-image').click()}
+                  >
+                    Upload Image
+                  </button>
+                </label>
+                {image && (
+                  <img src={image} alt="Preview" style={{ maxWidth: '100%', borderRadius: 8, marginTop: 8 }} />
+                )}
+              </div>
+              <div style={{ marginBottom: 16, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', border: '1px solid #ccc', padding: 16, borderRadius: 8, flex: 1}}>
+                <button type="button" style={{ padding: '8px 16px' }}>Open Camera</button>
+              </div> 
+              </div>            
             <button type="submit" style={{ padding: '10px 24px', background: '#1976d2', color: '#fff', border: 'none', borderRadius: 4 }}>Submit</button>
           </form>
         </div>
@@ -41,7 +59,6 @@ function App() {
     );
   }
 
-  // Results page
   return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div className="App" style={{ maxWidth: 600, width: '100%', padding: 24, borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
