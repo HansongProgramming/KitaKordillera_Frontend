@@ -15,6 +15,8 @@ function App() {
     previousDiagnosis: '',
   });
 
+  const [results, setResults] = useState(null);
+
   const handleSubmitConsultation = (e) => {
     e.preventDefault();
     setPage('patientInfo');
@@ -31,10 +33,33 @@ function App() {
     setPatientInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmitPatientInfo = (e) => {
+  const handleSubmitPatientInfo = async (e) => {
     e.preventDefault();
-    setPage('results');
+
+    if (!image) {
+      alert("Please upload an image first");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", document.getElementById("upload-image").files[0]);
+    formData.append("patientInfo", JSON.stringify(patientInfo));
+
+    try {
+      const response = await fetch("http://localhost:8000/analyze", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      setResults(data);
+      setPage("results");
+    } catch (err) {
+      console.error("Error uploading:", err);
+      alert("Failed to analyze image");
+    }
   };
+
 
   if (page === 'consultation') {
     return (
@@ -45,8 +70,8 @@ function App() {
             <strong>Disclaimer:</strong> This tool is for informational purposes only and does not replace professional medical advice.
           </div>
           <form onSubmit={handleSubmitConsultation}>
-            <div style={{ marginBottom: 16, display: 'flex', flexDirection: 'row', gap: 16}}> 
-              <div style={{ marginBottom: 16, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', border: '1px solid #ccc', padding: 16, borderRadius: 8, flex:1}}>
+            <div style={{ marginBottom: 16, display: 'flex', flexDirection: 'row', gap: 16 }}>
+              <div style={{ marginBottom: 16, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', border: '1px solid #ccc', padding: 16, borderRadius: 8, flex: 1 }}>
                 <input
                   type="file"
                   id="upload-image"
@@ -67,10 +92,10 @@ function App() {
                   <img src={image} alt="Preview" style={{ maxWidth: '100%', borderRadius: 8, marginTop: 8 }} />
                 )}
               </div>
-              <div style={{ marginBottom: 16, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', border: '1px solid #ccc', padding: 16, borderRadius: 8, flex: 1}}>
+              <div style={{ marginBottom: 16, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', border: '1px solid #ccc', padding: 16, borderRadius: 8, flex: 1 }}>
                 <button type="button" style={{ padding: '8px 16px' }}>Open Camera</button>
-              </div> 
-            </div>            
+              </div>
+            </div>
             <button type="submit" style={{ padding: '10px 24px', background: '#1976d2', color: '#fff', border: 'none', borderRadius: 4 }}>Submit</button>
           </form>
         </div>
@@ -134,20 +159,35 @@ function App() {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div className="App" style={{ maxWidth: 600, width: '100%', padding: 24, borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
         <h2>Results</h2>
-        <div style={{ marginBottom: 20, background: '#e3f2fd', padding: 16, borderRadius: 6 }}>
-          <strong>Result:</strong> <span style={{ color: '#1976d2' }}>Sample Diagnosis</span>
-        </div>
-        <div style={{ marginBottom: 20 }}>
-          <strong>Image:</strong><br />
-          {image ? (
-            <img src={image} alt="Uploaded" style={{ maxWidth: '100%', borderRadius: 8, marginTop: 8 }} />
-          ) : (
-            <div style={{ color: '#888', marginTop: 8 }}>No image uploaded.</div>
-          )}
-        </div>
-        <div style={{ marginBottom: 20 }}>
-          <strong>Probability:</strong> <span style={{ color: '#388e3c' }}>85%</span>
-        </div>
+        {results ? (
+          <>
+            <div style={{ marginBottom: 20, background: '#e3f2fd', padding: 16, borderRadius: 6 }}>
+              <strong>Result:</strong>{" "}
+              <span style={{ color: '#1976d2' }}>
+                {results.metrics?.diagnosis || "No diagnosis"}
+              </span>
+            </div>
+
+            <div style={{ marginBottom: 20 }}>
+              <strong>Image:</strong><br />
+              <img
+                src={`http://localhost:8000/annotated/${results.annotated_image}`}
+                alt="Annotated"
+                style={{ maxWidth: '100%', borderRadius: 8, marginTop: 8 }}
+              />
+
+            </div>
+
+            <div style={{ marginBottom: 20 }}>
+              <strong>Probability:</strong>{" "}
+              <span style={{ color: '#388e3c' }}>
+                {results.metrics?.probability || "N/A"}%
+              </span>
+            </div>
+          </>
+        ) : (
+          <p>No results yet.</p>
+        )}
         <div style={{ marginBottom: 20 }}>
           <strong>Clinic Suggestion:</strong>
           <div style={{ marginTop: 8, height: 150, background: '#f5f5f5', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888' }}>
