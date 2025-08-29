@@ -264,18 +264,37 @@ if (page === 'consultation') {
                 {results.metrics?.diagnosis || "No diagnosis"}
               </span>
             </div>
-            {/* Nearest Optal Clinic */}
+            {/* Nearest Optal Clinics */}
             <div style={{ marginBottom: 20 }}>
-              <strong>Clinic Location:</strong>
-              <div style={{ marginTop: 8, height: 300, borderRadius: 8, overflow: 'hidden' }}>
+              <strong>Clinic Locations:</strong>
+              <div style={{
+                marginTop: 8,
+                display: 'flex',           // horizontal layout
+                gap: '16px',               // space between maps
+                height: 300,
+                borderRadius: 8,
+                overflow: 'hidden'
+              }}>
+                {/* Clinic 1 */}
                 <iframe
-                  title="Baguio Eye Center Map" // unique title
-                  width="100%"
+                  title="Baguio Eye Center Map"
+                  width="50%"               // take half of the container
                   height="100%"
-                  style={{ border: 0 }} // must be an object
+                  style={{ border: 0 }}
                   loading="lazy"
                   allowFullScreen
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3859.123456789!2d120.5960!3d16.4023!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3392d8abcd12345%3A0xabcdef1234567890!2sBaguio%20Eye%20Center!5e0!3m2!1sen!2sph!4v1693300000000!5m2!1sen!2sph"
+                ></iframe>
+
+                {/* Clinic 2 */}
+                <iframe
+                  title="Saint Louis Hospital Eye Dept Map"
+                  width="50%"               // take other half
+                  height="100%"
+                  style={{ border: 0 }}
+                  loading="lazy"
+                  allowFullScreen
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3859.123456789!2d120.5960!3d16.4117!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3392d8abcd67890%3A0xabcdef9876543210!2sSaint%20Louis%20Hospital%20Eye%20Dept!5e0!3m2!1sen!2sph!4v1693300000000!5m2!1sen!2sph"
                 ></iframe>
               </div>
             </div>
