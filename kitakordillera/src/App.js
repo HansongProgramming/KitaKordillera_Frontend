@@ -311,7 +311,7 @@ function App() {
             </div>
 
             {/* Annotated image */}
-            {results.annotated_image && (
+            {/* {results.annotated_image && (
               <div style={{ marginBottom: 20 }}>
                 <strong>Image:</strong><br />
                 <img
@@ -320,12 +320,12 @@ function App() {
                   style={{ maxWidth: '100%', borderRadius: 8, marginTop: 8 }}
                 />
               </div>
-            )}
+            )} */}
 
             {/* All findings list */}
             <div style={{ marginBottom: 20 }}>
               <strong>All Findings:</strong>
-              <ul>
+              <ul style={{ listStyleType: "none" }}>
                 {results.result?.map((f, idx) => (
                   <li key={idx}>
                     {f.name} – {f.present ? "Present" : "Absent"} ({(f.confidence * 100).toFixed(1)}%)
