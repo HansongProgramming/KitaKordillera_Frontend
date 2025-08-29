@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import CaptureModal from "./components/capture";
 import './App.css';
 
 function App() {
@@ -16,6 +17,9 @@ function App() {
   });
 
   const [results, setResults] = useState(null);
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
 
   const handleSubmitConsultation = (e) => {
     e.preventDefault();
@@ -61,47 +65,140 @@ function App() {
     }
   };
 
-  if (page === 'consultation') {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div className="App" style={{ maxWidth: 500, width: '100%', padding: 24, borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-          <h2>KitaKordillera</h2>
-          <div style={{ marginBottom: 20, background: '#f9f9f9', padding: 16, borderRadius: 6, justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-            <strong>Disclaimer:</strong> This tool is for informational purposes only and does not replace professional medical advice.
-          </div>
-          <form onSubmit={handleSubmitConsultation}>
-            <div style={{ marginBottom: 16, display: 'flex', flexDirection: 'row', gap: 16 }}>
-              <div style={{ marginBottom: 16, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', border: '1px solid #ccc', padding: 16, borderRadius: 8, flex: 1 }}>
-                <input
-                  type="file"
-                  id="upload-image"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  style={{ display: 'none' }}
-                />
-                <label htmlFor="upload-image">
-                  <button
-                    type="button"
-                    style={{ padding: '8px 16px' }}
-                    onClick={() => document.getElementById('upload-image').click()}
-                  >
-                    Upload Image
-                  </button>
-                </label>
-                {image && (
-                  <img src={image} alt="Preview" style={{ maxWidth: '100%', borderRadius: 8, marginTop: 8 }} />
-                )}
-              </div>
-              <div style={{ marginBottom: 16, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', border: '1px solid #ccc', padding: 16, borderRadius: 8, flex: 1 }}>
-                <button type="button" style={{ padding: '8px 16px' }}>Open Camera</button>
-              </div>
-            </div>
-            <button type="submit" style={{ padding: '10px 24px', background: '#1976d2', color: '#fff', border: 'none', borderRadius: 4 }}>Submit</button>
-          </form>
+if (page === 'consultation') {
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div
+        className="App"
+        style={{ maxWidth: 500, width: '100%', padding: 24, borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
+      >
+        <img src="images/KitaKordillera.png" alt="KitaKordillera Logo" style={{ maxWidth: 150 }} />
+          <h2 style={{ fontSize: '40px', textShadow: '2px 2px 6px rgba(0, 0, 0, 0.3), -2px -2px 6px rgba(173, 216, 230, 0.5)' }}>
+            KitaKordillera
+          </h2>
+
+        <div
+          style={{
+            marginBottom: 20,
+            background: '#f9f9f9',
+            padding: 16,
+            borderRadius: 6,
+            textAlign: 'center'
+          }}
+        >
+          <strong>Disclaimer:</strong> This tool is for informational purposes only and does not replace professional medical advice.
         </div>
+
+        <form onSubmit={handleSubmitConsultation}>
+          <div
+            style={{
+              marginBottom: 16,
+              display: 'flex',
+              flexDirection: 'row',
+              gap: 16
+            }}
+          >
+            {/* Upload Image */}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                textAlign: 'center',
+                border: '1px solid #ccc',
+                padding: 16,
+                borderRadius: 8,
+                flex: 1
+              }}
+            >
+              <input
+                type="file"
+                id="upload-image"
+                accept="image/*"
+                onChange={handleImageUpload}
+                style={{ display: 'none' }}
+              />
+              <button
+                type="button"
+                style={{ padding: '8px 16px' }}
+                onClick={() => document.getElementById('upload-image').click()}
+              >
+                Upload Image
+              </button>
+              {image && (
+                <img
+                  src={image}
+                  alt="Preview"
+                  style={{ maxWidth: '100%', borderRadius: 8, marginTop: 8 }}
+                />
+              )}
+            </div>
+
+            {/* Capture Image */}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                textAlign: 'center',
+                border: '1px solid #ccc',
+                padding: 16,
+                borderRadius: 8,
+                flex: 1
+              }}
+            >
+              <button
+                type="button"
+                style={{ padding: '8px 16px' }}
+                onClick={() => setModalOpen(true)}
+              >
+                Open Camera
+              </button>
+
+              {previewImage && (
+                <div style={{ marginTop: 20 }}>
+                  <img
+                    src={previewImage}
+                    alt="Captured Preview"
+                    style={{ maxWidth: '100%', borderRadius: 8, marginTop: 8 }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            style={{
+              padding: '10px 24px',
+              background: '#1976d2',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 4
+            }}
+          >
+            Submit
+          </button>
+        </form>
+
+        {/* Camera Capture Modal */}
+        {isModalOpen && (
+          <CaptureModal
+            isOpen={isModalOpen}
+            onClose={() => setModalOpen(false)}
+            onCapture={(img) => {
+              setPreviewImage(img); // store the captured image
+              setModalOpen(false); // close modal after capture
+            }}
+          />
+        )}
       </div>
-    );
-  }
+    </div>
+  );
+}
+
 
   if (page === 'patientInfo') {
     return (
